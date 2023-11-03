@@ -17,5 +17,5 @@ final case class DatabaseConfig (
     )
 
 object DatabaseConfig {
-  implicit val configReader: ConfigReader[DatabaseConfig] = deriveReader[DatabaseConfig]
+  implicit val configReader: ConfigReader[DatabaseConfig] = deriveReader
 }

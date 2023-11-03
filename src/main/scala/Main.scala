@@ -1,4 +1,5 @@
-import cats.Applicative.ops.toAllApplicativeOps
+//import cats.Applicative.ops.toAllApplicativeOps
+import cats.implicits._
 import cats.effect.{ExitCode, IO, IOApp}
 import com.sabalitech.api.Routes
 import com.sabalitech.config.{ApiConfig, DatabaseConfig}

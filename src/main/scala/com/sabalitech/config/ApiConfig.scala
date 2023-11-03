@@ -12,5 +12,5 @@ import eu.timepit.refined.pureconfig._
 final case class ApiConfig (host: NonEmptyString, port: PortNumber)
 
 object ApiConfig {
-  implicit val configReader: ConfigReader[ApiConfig] = deriveReader[ApiConfig]
+  implicit val configReader: ConfigReader[ApiConfig] = deriveReader
 }
