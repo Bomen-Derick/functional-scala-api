@@ -19,7 +19,6 @@ import eu.timepit.refined.auto._
  */
 class Routes[F[_] : Sync](repo: Repository[F]) extends Http4sDsl[F] {
   implicit def decodeProduct: EntityDecoder[F, Product] = jsonOf
-
   implicit def encodeProduct[A[_] : Applicative]: EntityEncoder[A, Product] = jsonEncoderOf
 
   val routes: HttpRoutes[F] = HttpRoutes.of[F] {
@@ -32,11 +31,20 @@ class Routes[F[_] : Sync](repo: Repository[F]) extends Http4sDsl[F] {
 
     // update a product
     case req@PUT -> Root / "product" / UUIDVar(_) =>
-      for {
-        product <- req.as[Product]
-        _ <- repo.updateProduct(product)
-        res <- NoContent()
-      } yield res
+      req
+        .as[Product]
+        .flatMap { p =>
+          for {
+            content <- repo.updateProduct(p)
+            res <- content match {
+              case 0 => NotFound()
+              case _ => NoContent()
+            }
+          } yield res
+        }
+        .handleErrorWith {
+          case InvalidMessageBodyFailure(_, _) => BadRequest()
+        }
 
     // load all products
     case GET -> Root / "products" =>
@@ -58,11 +66,20 @@ class Routes[F[_] : Sync](repo: Repository[F]) extends Http4sDsl[F] {
 
     // create a product
     case req@POST -> Root / "products" =>
-      for {
-        product <- req.as[Product]
-        _ <- repo.saveProduct(product)
-        res <- NoContent()
-      } yield res
+      req
+        .as[Product]
+        .flatMap { p =>
+          for {
+            content <- repo.saveProduct(p)
+            res <- content match {
+              case 0 => InternalServerError()
+              case _ => NoContent()
+            }
+          } yield res
+        }
+        .handleErrorWith {
+          case InvalidMessageBodyFailure(_, _) => BadRequest()
+        }
   }
 
 }

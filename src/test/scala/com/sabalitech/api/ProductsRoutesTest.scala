@@ -17,11 +17,11 @@ import scala.collection.immutable.Seq
 /**
   * Created by Bomen Derick.
   */
-class ProductsRoutesTest extends BaseSpec {
+final class ProductsRoutesTest extends BaseSpec {
   implicit def decodeProduct: EntityDecoder[IO, Product] = jsonOf
   implicit def decodeProducts: EntityDecoder[IO, List[Product]] = jsonOf
   implicit def encodeProduct[A[_] : Applicative]: EntityEncoder[A, Product] = jsonEncoderOf
-  private val emptyRepository: Repository[IO]
+  private val emptyRepository: Repository[IO] =  new TestRepository[IO](Seq.empty)
 
   "ProductsRoutes" when {
     "GET /products" when {

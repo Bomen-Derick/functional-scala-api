@@ -11,13 +11,11 @@ import fs2.Stream
   */
 class TestRepository[F[_]: Effect](data: Seq[Product]) extends Repository[F]{
   override def loadProduct(id: ProductId): F[Seq[(ProductId, LanguageCode, ProductName)]] = {
-    val empt = Seq.empty[String]
     data.find(_.id === id) match {
       case None => Seq.empty[(ProductId, LanguageCode, ProductName)].pure[F]
       case Some(p) =>
         val ns = p.names.toNonEmptyList.toList.to[Seq]
         ns.map(n =>(p.id, n.lang, n.name)).pure[F]
-//        ns.map(n => (p.id, n.lang, n.name)).pure[F]
     }
   }
 

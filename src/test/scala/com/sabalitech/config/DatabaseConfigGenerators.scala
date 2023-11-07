@@ -15,8 +15,8 @@ object DatabaseConfigGenerators {
     p = RefType.applyRef[DatabasePassword](gp.mkString).getOrElse(DefaultPassword)
   } yield DatabaseConfig(
     driver = "org.postgresql.Driver",
-    url = "jdbc:postgresql://localhost:5422/test-database",
-    user = "pure",
+    url = "jdbc:postgresql://localhost:5432/pure_scala",
+    user = "postgres",
     password = p
   )
 
